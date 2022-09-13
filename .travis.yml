@@ -15,7 +15,7 @@ jobs:
     #   - docker build -t $DMAINREPO:$VERSION -f build/DockerFile.sklearn-amd64 .
     #   - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
     #   - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
-    #   - docker push $DMAINREPO
+    #   - docker push -a $DMAINREPO
     - stage: build predicting docker image
       script:
       - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp-amd64
@@ -24,7 +24,7 @@ jobs:
       - docker build -t $DMAINREPO:$VERSION -f build/DockerFile.app-amd64 .
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
-      - docker push $DMAINREPO
+      - docker push -a $DMAINREPO
     - stage: test docker image
       script:
       - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
