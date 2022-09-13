@@ -24,7 +24,7 @@ docker build -t xnonr/sklearn:0.1.0 -f ./build/DockerFile.sklearn .
 Buils the Docker Image that actually contains the prediction application along with the API server.
 
 ```
-docker build -t xnonr/predictionapp:0.1.0 -f ./build/DockerFile.app .
+docker build -t xnonr/predictionapp:0.2.0 -f ./build/DockerFile.app .
 ```
 
 ## Predicting
@@ -40,29 +40,45 @@ uvicorn predicting.main:app --port 1313
 Builds and runs the Docker Container of the prediction application API.
 
 ```
-docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.1.0
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.2.0
+```
+
+Alternatively you can run the ultilty script:
+
+``` 
+run_api.sh
 ```
 
 ### Invokes the API
 
 Tests the prediction application API on variously sized raw JSON data files taken from the originally presented testing data '.csv' file.
 
+Tests 1 Row of JSON in an unlisted format
 ```
-# Tests 1 Row of JSON in an unlisted format
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_1_row_v1.json
+```
 
-# Tests 1 Row of JSON in a listed format
+Tests 1 Row of JSON in a listed format
+```
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_1_row_v2.json
+```
 
-# Tests 10 Rows of JSON in a listed format
+Tests 10 Rows of JSON in a listed format
+```
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_10_rows.json
+```
 
-# Tests 100 Rows of JSON in a listed format
+Tests 100 Rows of JSON in a listed format
+```
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_100_rows.json
+```
 
-# Tests 1000 Rows of JSON in a listed format
+Tests 1000 Rows of JSON in a listed format
+```
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_1000_rows.json
+```
 
-# Tests 10000 Rows of JSON in a listed format
+Tests 10000 Rows of JSON in a listed format
+```
 curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_raw_json_10000_rows.json
 ```
