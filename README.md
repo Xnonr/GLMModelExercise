@@ -34,5 +34,5 @@ docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.1.0
 
 ### Invokes the API
 ```
-curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' --data '{"x0": "-1.018506", "x1": "-4.180869", "x2": "5.70305872366547", "x3": "-0.522021597308617", ...,"x99": "2.55535888"}
+curl --request POST --url http://localhost:1313/predict --header 'content-type: application/json' -d @testing/sample_json1.json
 ```
