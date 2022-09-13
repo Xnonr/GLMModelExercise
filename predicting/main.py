@@ -49,6 +49,15 @@ def load_models():
 
 @app.post('/predict')
 async def get_prediction(info: Request):
+    '''
+    Returns a single event or a list of events as a JSON message containing the business outcome, 
+        probability of said outcome, along with the input variables which led to said outcome 
+        in alphanumerical order for all those predictions which met the minimum standard of 75% 
+        chance of a successful sale to a potential buying customer
+
+    Keyword Arguments:
+    info.json() -- Raw JSON data
+    '''
 
     req_info = await info.json()
 
@@ -69,20 +78,20 @@ async def get_prediction(info: Request):
 def transform_json_to_df(json_str):
     '''
     Returns a DataFrame containing raw JSON data
-    
+
     Keyword Arguments:
     json_str -- Raw JSON data
     '''
-    
-    obj = json.loads(json_str) 
-    
+
+    obj = json.loads(json_str)
+
     if isinstance(obj, list):
-        df = pd.read_json(json_str, orient = 'records')
-    
+        df = pd.read_json(json_str, orient='records')
+
     else:
         json_str = '[' + json_str + ']'
-        df = pd.read_json(json_str, orient = 'records')
-    
+        df = pd.read_json(json_str, orient='records')
+
     return df
 
 
@@ -250,7 +259,8 @@ def filter_df_column_variables(ordr_clmn_names_lst, df):
     #    not all of the desired dummy variables will always be successfully generated,
     #    necessitating their inclusion afterwards via the code below
     if necessary_clmn_vars_set.issubset(avlbl_clmn_vars_set) == False:
-        nan_df = pd.DataFrame(np.nan, index=range(df.shape[0]), columns=ordr_clmn_names_lst)
+        nan_df = pd.DataFrame(np.nan, index=range(
+            df.shape[0]), columns=ordr_clmn_names_lst)
         df = df.combine_first(nan_df)
         df = df.fillna(0)
 
@@ -316,7 +326,6 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
     else:
 
         output_msgs_lst = []
-        count_output_msgs = 0
 
         for row in range(num_rows_df):
             predicted_outcome = 0
@@ -327,21 +336,17 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
             if predicted_probability >= 0.75:
                 predicted_outcome = 1
 
-            for var in alphanum_ord_clmn_var_names_lst:
-                mdl_inputs[var] = df.iloc[row][var]
+                for var in alphanum_ord_clmn_var_names_lst:
+                    mdl_inputs[var] = df.iloc[row][var]
 
-            mdl_predictions = {'business_outcome': str(predicted_outcome),
-                               'p_hat': str(predicted_probability)}
+                mdl_predictions = {'business_outcome': str(predicted_outcome),
+                                'p_hat': str(predicted_probability)}
 
-            prediction_msg = mdl_predictions | mdl_inputs
+                prediction_msg = mdl_predictions | mdl_inputs
 
-            output_msgs_lst.append(prediction_msg)
+                output_msgs_lst.append(prediction_msg)
 
-            # else:
-            #output_msgs_lst.append("{'message': 'Business outcome probability too low.'}")
-            # pass
-
-            #count_output_msgs += 1
-            # print(count_output_msgs)
+            else:
+                pass
 
         return json.dumps(output_msgs_lst)
