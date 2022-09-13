@@ -66,16 +66,23 @@ async def get_prediction(info: Request):
     return json_output_message
 
 
-def transform_json_to_df(json):
+def transform_json_to_df(json_str):
     '''
     Returns a DataFrame containing raw JSON data
-
+    
     Keyword Arguments:
-    json -- Raw JSON data
+    json_str -- Raw JSON data
     '''
-
-    df = pd.read_json(json, orient='records')
-
+    
+    obj = json.loads(json_str) 
+    
+    if isinstance(obj, list):
+        df = pd.read_json(json_str, orient = 'records')
+    
+    else:
+        json_str = '[' + json_str + ']'
+        df = pd.read_json(json_str, orient = 'records')
+    
     return df
 
 
