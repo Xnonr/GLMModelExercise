@@ -1,1 +1,1 @@
-docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.2.0
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.3.0

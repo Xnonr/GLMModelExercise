@@ -321,7 +321,7 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
 
     if num_rows_df == 0:
 
-        return json.dumps({'message': 'ERROR - No valid JSON data available for prediction.'})
+        return {'message': 'ERROR - No valid JSON data available for prediction.'}
 
     else:
 
@@ -349,4 +349,4 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
             else:
                 pass
 
-        return json.dumps(output_msgs_lst)
+        return output_msgs_lst

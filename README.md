@@ -24,7 +24,7 @@ docker build -t xnonr/sklearn:0.1.0 -f ./build/DockerFile.sklearn .
 Buils the Docker Image that actually contains the prediction application along with the API server.
 
 ```
-docker build -t xnonr/predictionapp:0.2.0 -f ./build/DockerFile.app .
+docker build -t xnonr/predictionapp:0.3.0 -f ./build/DockerFile.app .
 ```
 
 ## Predicting
@@ -40,7 +40,7 @@ uvicorn predicting.main:app --port 1313
 Builds and runs the Docker Container of the prediction application API.
 
 ```
-docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.2.0
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.3.0
 ```
 
 Alternatively you can run the ultilty script:
