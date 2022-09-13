@@ -15,16 +15,32 @@ jupyter-notebook
 
 Builds the base Docker Image contaning Python as well as all of the required libraries needed to run the prediction application.
 
+On M1 Mac please execute the following command:
+
 ```
 docker build -t xnonr/sklearn:0.1.0 -f ./build/DockerFile.sklearn .
 ```
 
+On PC or other Linux based machine please execute the following command:
+
+```
+docker build -t xnonr/sklearn-amd64:0.1.0 -f ./build/DockerFile.sklearn-amd64 .
+```
+
 ### Prediction Application Docker Image
 
-Buils the Docker Image that actually contains the prediction application along with the API server.
+Builds the Docker Image that actually contains the prediction application along with the API server.
+
+On M1 Mac please execute the following command:
 
 ```
 docker build -t xnonr/predictionapp:0.3.0 -f ./build/DockerFile.app .
+```
+
+On PC or other Linux based machine please execute the following command:
+
+```
+docker build -t xnonr/predictionapp-amd64:0.3.0 -f ./build/DockerFile.app-amd64 .
 ```
 
 ## Predicting
@@ -39,11 +55,19 @@ uvicorn predicting.main:app --port 1313
 
 Builds and runs the Docker Container of the prediction application API.
 
+On M1 Mac please execute the following command:
+
 ```
 docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.3.0
 ```
 
-Alternatively you can run the ultilty script:
+On PC or other Linux based machine please execute the following command:
+
+```
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp-amd64:0.3.0
+```
+
+Alternatively you can run the ultilty script, but please note you must edit the script via comments in order to run the script on Mac M1.
 
 ``` 
 run_api.sh

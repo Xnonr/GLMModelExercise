@@ -12,7 +12,7 @@ jobs:
       - export DMAINREPO=$DOCKER_NAMESPACE/sklearn-amd64
       - export VERSION=0.1.0
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -t $DMAINREPO:$VERSION -f build/Dockerfile.sklearn-amd64 .
+      - docker build -t $DMAINREPO:$VERSION -f build/DockerFile.sklearn-amd64 .
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
       - docker push $DMAINREPO
@@ -21,7 +21,7 @@ jobs:
       - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp-amd64
       - export VERSION=0.3.0
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -t $DMAINREPO:$VERSION -f build/Dockerfile.app-amd64 .
+      - docker build -t $DMAINREPO:$VERSION -f build/DockerFile.app-amd64 .
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
       - docker push $DMAINREPO
