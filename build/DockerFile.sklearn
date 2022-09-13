@@ -4,8 +4,7 @@ FROM python:3.10
 
 #USER user
 
-COPY requirements.txt .
+COPY ./build/requirements.txt ./requirements.txt
 
-RUN pip install -r requirements.txt \    
-    && rm -rf /root/.cache 
+RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
