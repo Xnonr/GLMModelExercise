@@ -43,8 +43,8 @@ def load_models():
     global ss
 
     mdl = sm.load('models/glm_final_model.pickle')
-    si = pickle.load(open('../models/glm_simple_imputer.pickle', 'rb'))
-    ss = pickle.load(open('../models/glm_standard_scalar.pickle', 'rb'))
+    si = pickle.load(open('models/glm_simple_imputer.pickle', 'rb'))
+    ss = pickle.load(open('models/glm_standard_scalar.pickle', 'rb'))
 
 
 @app.post('/predict')
@@ -243,8 +243,7 @@ def filter_df_column_variables(ordr_clmn_names_lst, df):
     #    not all of the desired dummy variables will always be successfully generated,
     #    necessitating their inclusion afterwards via the code below
     if necessary_clmn_vars_set.issubset(avlbl_clmn_vars_set) == False:
-        nan_df = pd.DataFrame(np.nan, index=range(
-            df.shape[0]), columns=ordr_clmn_names_lst)
+        nan_df = pd.DataFrame(np.nan, index=range(df.shape[0]), columns=ordr_clmn_names_lst)
         df = df.combine_first(nan_df)
         df = df.fillna(0)
 

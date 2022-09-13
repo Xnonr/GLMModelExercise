@@ -1,24 +1,24 @@
-sudo: true
+#sudo: true
 
-service:
-  - docker
+#service:
+#  - docker
 
-install: true
+#install: true
 
-jobs:
-  include:
-    - stage: build docker image
-      script:
-      - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
-      - export VERSION=0.1.0
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -t $DMAINREPO:$VERSION -f Dockerfile .
-      - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
-      - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
-      - docker push $DMAINREPO
-    - stage: test docker image
-      script:
-      - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
-      - export VERSION=0.1.0
-      - docker run -d --name test_predictionapp $DMAINREPO:$VERSION
-      - docker ps | grep -q test_predictionapp
+#jobs:
+#  include:
+#    - stage: build docker image
+#      script:
+#      - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
+#      - export VERSION=0.1.0
+#      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#      - docker build -t $DMAINREPO:$VERSION -f Dockerfile .
+#      - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
+#      - docker tag $DMAINREPO:$VERSION $DMAINREPO:travis-$TRAVIS_BUILD_NUMBER
+#      - docker push $DMAINREPO
+#    - stage: test docker image
+#      script:
+#      - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
+#      - export VERSION=0.1.0
+#     - docker run -d --name test_predictionapp $DMAINREPO:$VERSION
+#     - docker ps | grep -q test_predictionapp
