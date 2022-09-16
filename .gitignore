@@ -3,4 +3,5 @@
 .Rhistory
 GLMModelAppDraft.ipynb
 testing.ipynb
+__pycache__
 write_up.docx

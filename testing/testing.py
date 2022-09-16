@@ -3,11 +3,11 @@
 
 # Imports Required Libraries
 import pandas as pd
-import json
+import os
 import requests
 
 
-def retrieve_response(raw_json_data_file):
+def retrieve_response(testing_dir, raw_json_data_file):
     '''
     Returns a list response after sending an HTTP POST request filled with raw JSON data
 
@@ -17,12 +17,12 @@ def retrieve_response(raw_json_data_file):
 
     api_url = "http://127.0.0.1:1313/predict"
 
-    post_json_data = open(raw_json_data_file, 'r')
-    post_headers = {'content-type': 'application/json'}
+    with open(os.path.join(testing_dir, raw_json_data_file), 'r') as post_json_data:
+        post_headers = {'content-type': 'application/json'}
 
-    response = requests.post(
-        api_url, data=post_json_data, headers=post_headers)
-    response_json_data = response.json()
+        response = requests.post(
+            api_url, data=post_json_data, headers=post_headers)
+        response_json_data = response.json()
 
     return response_json_data
 
@@ -162,6 +162,8 @@ def generate_prediction_messages():
 
     test_results = []
 
+    testing_dir = os.path.dirname(os.path.abspath(__file__))
+ 
     sample_raw_json_data_files = ['sample_raw_json_1_row_v1.json',
                                   'sample_raw_json_1_row_v2.json',
                                   'sample_raw_json_10_rows.json',
@@ -174,7 +176,8 @@ def generate_prediction_messages():
         test_res_msg = '------------------------------------------------------------\n'
         test_res_msg += f'Test #{index1}: Data = {sample_raw_json_data_files[index1]}\n\n'
 
-        pred_list = retrieve_response(sample_raw_json_data_files[index1])
+        pred_list = retrieve_response(
+            testing_dir, sample_raw_json_data_files[index1])
 
         test_res1, test_res_dtls1 = test_prediction_results_count(
             index1, pred_list)
@@ -233,4 +236,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

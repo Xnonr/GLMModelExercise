@@ -26,7 +26,13 @@ kind load docker-image xnonr/predictionapp:0.3.0 --name predictingcluster
 # as well as the service object used to resolved deployed pods shifting IP addresses
 # Shell script waits that deployment is complete before proceeding to avoid loading errors when going to fast
 kubectl apply --wait=true -f deploy/predictionapp_nodeport.yaml
-kubectl wait pod -l app=predictionapp --for=condition=Ready --timeout=30s
+kubectl wait pod -l app=predictionapp --for condition=Ready --timeout=30s
+kubectl wait deployment predictionapp-deployment --for condition=Available=True --timeout=30s
+
+# Play it safe, as it is difficult to check when the kuberentes service is fully up, ready and available
+# Otherwise the script tries to move forward before then and fails
+echo "Waiting for kubernetes service to become available."
+sleep 10
 
 # Displays the status of the kubernetes deployment object
 #kubectl get deployment predictionapp-deployment
@@ -45,9 +51,7 @@ kubectl wait pod -l app=predictionapp --for=condition=Ready --timeout=30s
 #kubectl get pod -l app=predictionapp
 
 # Runs the Python test script for the Python prediction application that should now be running within a Docker container within one of the pods
-cd testing
-./testing.py
-cd ..
+./testing/testing.py
 
 # As long as the kubernetes deploymnet object exists, pods will keep being created as indicated if any halt or are deleted
 # The only way to shut down all pods is to delete the kubernetes deployment object itself to stop it from notifying the scheduling process
