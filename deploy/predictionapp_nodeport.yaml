@@ -1,0 +1,48 @@
+# Kubernetes Deployment Object
+# Deploys the kubernetes pods, which themselves deploy the Docker containers
+# Everytime a kubernetes pod is booted up, it receives a new IP address
+# All Docker containers within a kubernetes pod have the same IP address as the pod itself
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictionapp-deployment
+spec:
+  # How does kubernetes select which Docker image to start up and run
+  selector:
+    # How does the selector find the given Docker image
+    matchLabels:
+      app: predictionapp
+  # How many kubernetes pods, who themselves contain docker containers, should start up on each computer system
+  replicas: 1
+  # The template configuration of a kubernetes pod
+  template:
+    metadata:
+      # Ensure that labels match up to avoid potential issues
+      labels:
+        app: predictionapp
+    spec:
+      # The list of docker containers to be booted up within each kubenetes pod
+      containers:
+      # An dictionary containing the configuration of a single instance of a Docker container
+      - name: predictionapp
+        image: xnonr/predictionapp:0.3.0
+        ports:
+        - containerPort: 1313
+
+# Kubernetes Service Object
+# Used to covertly resolve IP address issues given how deployed kubernetes pods have shifting IP addresses
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: predictionapp-service
+spec:
+  type: NodePort
+  # The kubernetes service object's selector must match that of the kubernetes deployment object's selector
+  selector:
+    app: predictionapp
+  ports:
+  - name: http
+    nodePort: 31313
+    port: 1313

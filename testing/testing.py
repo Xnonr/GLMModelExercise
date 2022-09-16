@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# Indicates to the terminal that this file is not a shell script and must be run as Python3
+
 # Imports Required Libraries
 import pandas as pd
 import json
@@ -228,4 +231,6 @@ def main():
         print(outcome)
 
 
-main()
+if __name__ == "__main__":
+    main()
+

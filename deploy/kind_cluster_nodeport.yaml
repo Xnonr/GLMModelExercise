@@ -1,0 +1,10 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: predictingcluster
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 31313
+    hostPort: 1313
+    listenAddress: "0.0.0.0"
+    protocol: TCP
