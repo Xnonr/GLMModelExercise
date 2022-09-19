@@ -24,6 +24,9 @@ def retrieve_response(testing_dir, raw_json_data_file):
             api_url, data=post_json_data, headers=post_headers)
         response_json_data = response.json()
 
+        # Prints of the size of the response in in Bytes
+        #print(f'Size of Response: {len(response.content)}')
+
     return response_json_data
 
 

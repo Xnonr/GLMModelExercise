@@ -1,0 +1,21 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: predictingcluster
+nodes:
+- role: control-plane
+  # Used by Kind to create a Kubernetes cluster
+  kubeadmConfigPatches:
+  # YAML within YAML, given to KubeADM, indicates that Ingress will be used when the Kubernetes cluster starts up at creation
+  - | 
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  # Ingress object is woken up when a call to the listed ports at the appropriate IP address are made
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 1313
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 44300
+    protocol: TCP

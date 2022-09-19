@@ -1,0 +1,74 @@
+# Kubernetes Deployment Object
+# Deploys the kubernetes pods, which themselves deploy the Docker containers
+# Everytime a kubernetes pod is booted up, it receives a new IP address
+# All Docker containers within a kubernetes pod have the same IP address as the pod itself
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictionapp-deployment
+spec:
+  # How does kubernetes select which Docker image to start up and run
+  selector:
+    # How does the selector find the given Docker image
+    matchLabels:
+      app: predictionapp
+  # How many kubernetes pods, who themselves contain docker containers, should start up on each computer system
+  replicas: 1
+  # The template configuration of a kubernetes pod
+  template:
+    metadata:
+      # Ensure that labels match up to avoid potential issues
+      labels:
+        app: predictionapp
+    spec:
+      # The list of docker containers to be booted up within each kubenetes pod
+      containers:
+      # An dictionary containing the configuration of a single instance of a Docker container
+      # NEED PORTS EXPLANATION
+      - name: predictionapp
+        image: xnonr/predictionapp:0.3.0
+
+# Kubernetes Service Object
+# Used to covertly resolve IP address issues given how deployed kubernetes pods have shifting IP addresses
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: predictionapp-service
+spec:
+  # The kubernetes service object's selector must match that of the kubernetes deployment object's selector
+  selector:
+    app: predictionapp
+  ports:
+  - name: http
+    port: 1313
+
+---
+
+# Kubernetes Ingress Object
+# Closer to the API for Ingress than it's actual implementatiion
+# Handles requests to various services sharing a single IP address based upon the contents of their specific URL addresses
+# Necessary as you cannot afford to have the same number of IP addresses when many services are offered, becomes unmanageable, unwieldy and expense
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: predictionapp-ingress
+  # Configure the Ingress Nginx for protection and quality of life, avoid denial of service attacks, accept only from specific IP addresses, etc.
+  annotations:
+    # Stop gap measure, reconfigure the base prediction app so that it send back the prediction response in multiple smaller
+    #  smaller bacthes rather than a single large one to avoid 413 Errors, currently set to a max of 10 Megabytes for a worst case scenario
+    # For testing, the largest single batch of 10000 test rows at once sends back 2013 prediction rows of approximately 1.09 MB in size
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+  - http:
+      paths:
+      # Sets up the paths to various services whom share the same base IP address
+      - pathType: Prefix
+        path: "/predict"
+        backend:
+          service:
+            name: predictionapp-service
+            port:
+              number: 1313
