@@ -19,7 +19,7 @@ jobs:
     - stage: build predicting docker image
       script:
       - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp-amd64
-      - export VERSION=0.4.0
+      - export VERSION=0.5.0
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t $DMAINREPO:$VERSION -f build/DockerFile.app-amd64 .
       - docker tag $DMAINREPO:$VERSION $DMAINREPO:latest
@@ -28,6 +28,6 @@ jobs:
     - stage: test docker image
       script:
       - export DMAINREPO=$DOCKER_NAMESPACE/predictionapp
-      - export VERSION=0.4.0
+      - export VERSION=0.5.0
       - docker run -d --name test_predictionapp $DMAINREPO:$VERSION
       - docker ps | grep -q test_predictionapp

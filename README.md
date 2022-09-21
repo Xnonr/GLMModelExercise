@@ -34,13 +34,13 @@ Builds the Docker Image that actually contains the prediction application along 
 On M1 Mac please execute the following command:
 
 ```
-docker build -t xnonr/predictionapp:0.4.0 -f ./build/DockerFile.app .
+docker build -t xnonr/predictionapp:0.5.0 -f ./build/DockerFile.app .
 ```
 
 On PC or other Linux based machine please execute the following command:
 
 ```
-docker build -t xnonr/predictionapp-amd64:0.4.0 -f ./build/DockerFile.app-amd64 .
+docker build -t xnonr/predictionapp-amd64:0.5.0 -f ./build/DockerFile.app-amd64 .
 ```
 
 ## Predicting
@@ -58,13 +58,13 @@ Builds and runs the Docker Container of the prediction application API.
 On M1 Mac please execute the following command:
 
 ```
-docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.4.0
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp:0.5.0
 ```
 
 On PC or other Linux based machine please execute the following command:
 
 ```
-docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp-amd64:0.4.0
+docker run -d -p 1313:1313 --name prediction-api xnonr/predictionapp-amd64:0.5.0
 ```
 
 Alternatively you can run the ultilty script, but please note you must edit the script via comments in order to run the script on Mac M1.

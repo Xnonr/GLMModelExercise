@@ -11,7 +11,7 @@ kind create cluster --config deploy/kind_cluster_nodeport.yaml
 kubectl get all -A
 
 # Retrieves a Docker Image and loads it into the kind Docker Container, a Docker image within a Docker container
-kind load docker-image xnonr/predictionapp:0.4.0 --name predictingcluster
+kind load docker-image xnonr/predictionapp:0.5.0 --name predictingcluster
 
 # Enters the Docker container itself and opens up a shell command line within
 #docker exec -ti predictingcluster-control-plane bash
