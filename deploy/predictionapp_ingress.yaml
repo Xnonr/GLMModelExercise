@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: predictionapp
   # How many kubernetes pods, who themselves contain docker containers, should start up on each computer system
-  replicas: 1
+  replicas: 6
   # The template configuration of a kubernetes pod
   template:
     metadata:
@@ -26,7 +26,7 @@ spec:
       # An dictionary containing the configuration of a single instance of a Docker container
       # NEED PORTS EXPLANATION
       - name: predictionapp
-        image: xnonr/predictionapp:0.3.0
+        image: xnonr/predictionapp:0.4.0
 
 # Kubernetes Service Object
 # Used to covertly resolve IP address issues given how deployed kubernetes pods have shifting IP addresses
