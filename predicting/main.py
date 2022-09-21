@@ -75,15 +75,14 @@ async def get_prediction(info: Request):
     return json_output_message
 
 
-def transform_json_to_df(json_str):
+def transform_json_to_df(obj):
     '''
     Returns a DataFrame containing raw JSON data
 
     Keyword Arguments:
     json_str -- Raw JSON data
     '''
-
-    obj = json.loads(json_str)
+    json_str = json.dumps(obj)
 
     if isinstance(obj, list):
         df = pd.read_json(json_str, orient='records')
@@ -94,6 +93,25 @@ def transform_json_to_df(json_str):
 
     return df
 
+def transform_json_to_df_old(json_str):
+    '''
+    Returns a DataFrame containing raw JSON data
+
+    Keyword Arguments:
+    json_str -- Raw JSON data
+    '''
+
+    # Error 
+    obj = json.loads(json_str)
+
+    if isinstance(obj, list):
+        df = pd.read_json(json_str, orient='records')
+
+    else:
+        json_str = '[' + json_str + ']'
+        df = pd.read_json(json_str, orient='records')
+
+    return df
 
 def format_df_column_variables(df):
     '''
