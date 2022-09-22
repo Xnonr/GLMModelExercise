@@ -63,7 +63,7 @@ sleep 10
 
 # As long as the kubernetes deploymnet object exists, pods will keep being created as indicated if any halt or are deleted
 # The only way to shut down all pods is to delete the kubernetes deployment object itself to stop it from notifying the scheduling process
-kubectl delete --wait=true -f deploy/predictionapp_nodeport.yaml
+kubectl delete --wait=true -f deploy/predictionapp_ingress.yaml
 
 # Deletes the kind Docker container properly, avoid doing so via the Docker Desktop GUI
 kind delete cluster --name predictingcluster
