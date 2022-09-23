@@ -1,5 +1,4 @@
 # Imports Required Libraries
-import json
 import numpy as np
 import pandas as pd
 import pickle
@@ -80,63 +79,55 @@ def transform_json_to_df(obj):
     Returns a DataFrame containing raw JSON data
 
     Keyword Arguments:
-    json_str -- Raw JSON data
+    obj -- Raw JSON data in the data type form of a String, List or Dictionary
     '''
-    json_str = json.dumps(obj)
 
-    if isinstance(obj, list):
-        df = pd.read_json(json_str, orient='records')
-
+    if isinstance(obj, str):
+        if obj[0] == '[' and obj[len(obj) - 1] == ']':
+            df = pd.read_json(obj, orient='records')
+        elif obj[0] == '{' and obj[len(obj) - 1] == '}':
+            obj = '[' + obj + ']'
+            df = pd.read_json(obj, orient='records')
+        else:
+            df = pd.DataFrame()
+    elif isinstance(obj, list):
+        df = pd.DataFrame.from_dict(obj)
+    elif isinstance(obj, dict):
+        obj = [obj]
+        df = pd.DataFrame.from_dict(obj)
     else:
-        json_str = '[' + json_str + ']'
-        df = pd.read_json(json_str, orient='records')
+        df = pd.DataFrame()
 
     return df
 
-def transform_json_to_df_old(json_str):
-    '''
-    Returns a DataFrame containing raw JSON data
-
-    Keyword Arguments:
-    json_str -- Raw JSON data
-    '''
-
-    # Error 
-    obj = json.loads(json_str)
-
-    if isinstance(obj, list):
-        df = pd.read_json(json_str, orient='records')
-
-    else:
-        json_str = '[' + json_str + ']'
-        df = pd.read_json(json_str, orient='records')
-
-    return df
 
 def format_df_column_variables(df):
     '''
     Returns a DataFrame after having transformed those columns, whose values 
-        consisted of those of data types String and represented quantitative 
+        consisted of those of the String data type and representing quantitative 
         data, into values being that of the Float data type after removing any
-        non mathematical symbols 
+        non mathematically interpretable symbols 
 
     Keyword Arguments:
     df -- A DataFrame containing raw JSON data
     '''
 
-    # Formats the 'x12' and 'x63' columns', consisting of the data type String,
+    # Formats the 'x12' and 'x63' columns', consisting of the String data type,
     #    and respectively representing first monetary then percentage values,
-    #    into the data type Float so as to be able to latter on apply mathermatical
-    #    work upon said columns' values later on
+    #    into the Float data type so as to be able to later on apply mathematical
+    #    work upon said columns' values
 
-    df['x12'] = df['x12'].str.replace('$', '')
-    df['x12'] = df['x12'].str.replace(',', '')
-    df['x12'] = df['x12'].str.replace(')', '')
-    df['x12'] = df['x12'].str.replace('(', '-')
-    df['x12'] = df['x12'].astype(float)
+    columns_to_format = ['x12', 'x63']
 
-    df['x63'] = df['x63'].str.replace('%', '')
-    df['x63'] = df['x63'].astype(float)
+    unwanted_symbols = ['$', ',', '(', ')', '%']
+
+    for clmn in columns_to_format:
+        for usymb in unwanted_symbols:
+            if usymb != '(':
+                df[clmn] = df[clmn].str.replace(usymb, '')
+            else:
+                df[clmn] = df[clmn].str.replace(usymb, '-')
+        df[clmn] = df[clmn].astype(float)
 
     return df
 
@@ -144,7 +135,7 @@ def format_df_column_variables(df):
 def impute_missing_df_data(si, df):
     '''
     Returns a DataFrame with no column variables whose data is of a qualitative nature, 
-        as well as having filled in any remaining blank, NaN or NULL or otherwise missing 
+        as well as having filled in any remaining blank, NaN, NULL or otherwise missing 
         values via the usage of an imported, pre-trained SimpleImputer using a mean based 
         strategy
 
@@ -153,8 +144,12 @@ def impute_missing_df_data(si, df):
     df -- A formatted DataFrame
     '''
 
-    df = pd.DataFrame(si.transform(df.drop(columns=['x5', 'x31', 'x81', 'x82'])),
-                      columns=df.drop(columns=['x5', 'x31', 'x81', 'x82']).columns)
+    # Columns containing qualitative data that are dropped ahead of the imputation phase
+    #    as the SimpleImputer cannot properly function upon them
+    qual_clmns = ['x5', 'x31', 'x81', 'x82']
+
+    df = pd.DataFrame(si.transform(df.drop(columns=qual_clmns)),
+                      columns=df.drop(columns=qual_clmns).columns)
 
     return df
 
@@ -163,7 +158,7 @@ def scale_df_data(ss, df):
     '''
     Returns a DataFrame whose column variable values have all been scaled via a 
         standardization method for the purpose of feature scaling, utilizing an
-        imported. pre-trained StandardScalar
+        imported, pre-trained StandardScalar
 
     Keyword Arguments:
     ss -- A pre-trained, imported StandardScalar
@@ -262,7 +257,7 @@ def create_df_dummy_column_variables_old(df1, df2):
 def filter_df_column_variables(ordr_clmn_names_lst, df):
     '''
     Returns a DataFrame containing only those column variables required by the pre-trained model
-        for predictions, filtering out drom the given DataFrame only said columns
+        for predictions, filtering out from the given DataFrame only said columns
 
     Keyword Arguments:
     ordr_clmn_names_lst -- A list of DataFrame column variable names required by the pre-trained model
@@ -332,7 +327,7 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
     df -- A DataFrame containing only those 25 column variables required by the pre-trained model
     mdl -- A pre-trained, imported prediction model
     alphanum_ord_clmn_var_names_lst -- A list of DataFrame column variable names required by 
-                                       the pre-trained model order alphanumerically
+                                       the pre-trained model ordered alphanumerically
     '''
 
     num_rows_df = df.shape[0]
@@ -358,7 +353,7 @@ def predict_outcome(df, mdl, alphanum_ord_clmn_var_names_lst):
                     mdl_inputs[var] = df.iloc[row][var]
 
                 mdl_predictions = {'business_outcome': str(predicted_outcome),
-                                'p_hat': str(predicted_probability)}
+                                   'p_hat': str(predicted_probability)}
 
                 prediction_msg = mdl_predictions | mdl_inputs
 
