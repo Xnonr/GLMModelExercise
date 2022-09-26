@@ -25,7 +25,7 @@ spec:
       containers:
       # An dictionary containing the configuration of a single instance of a Docker container
       - name: predictionapp
-        image: xnonr/predictionapp:0.5.0
+        image: xnonr/predictionapp:0.6.0
         ports:
         - containerPort: 1313
 
