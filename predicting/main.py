@@ -9,12 +9,10 @@ from fastapi import Request
 from predicting.common import transform_json_to_df
 from predicting.common import batch_df
 
-# Synchronous Method Versions
-from predicting.common import extract_transform_predict_df
+# Synchronous Method Version
 from predicting.common import extract_transform_predict_df_batches
 
-# Asynchronous Method Versions
-from predicting.common import async_extract_transform_predict_df
+# Asynchronous Method Version
 from predicting.common import async_extract_transform_predict_df_batches
 
 # May aid with the Pickle file loading, functions however without, better safe than sorry
@@ -58,7 +56,32 @@ def load_models():
 
 
 @app.post('/predict')
-async def get_prediction(info: Request):
+async def get_parallel_prediction(info: Request):
+    '''
+    Returns a single event or a list of events as a JSON message containing the business outcome, 
+        probability of said outcome, along with the input variables which led to said outcome 
+        in alphanumerical order for all those predictions which met the minimum standard of 75% 
+        chance of a successful sale to a potential buying customer
+
+    Keyword Arguments:
+    info.json() -- Raw JSON data
+    '''
+
+    req_info = await info.json()
+
+    df = transform_json_to_df(req_info)
+
+    df_batches = batch_df(500, df)
+
+    json_output_message = await async_extract_transform_predict_df_batches(
+        df_batches, si, ss, final_df_column_variable_names_order,
+        mdl, alphanumerically_sorted_df_column_variable_names)
+
+    return json_output_message
+
+
+@app.post('/sequential/predict')
+async def get_sequential_prediction(info: Request):
     '''
     Returns a single event or a list of events as a JSON message containing the business outcome, 
         probability of said outcome, along with the input variables which led to said outcome 
