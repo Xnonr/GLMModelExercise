@@ -1,6 +1,17 @@
 # Sets the path so that 'kind' may be found by the terminal
 export PATH=$PATH:$HOME/go/bin
 
+# Initalizes the variables
+appimagename="predictionapp-unknown"
+appimageversion="0.6.0"
+
+# EXTREMELY SENSITIVE
+# Switch statement determines the current machine's name and the operating system it is making use of
+case $(uname -m) in
+    x86_64) appimagename="predictionapp-amd64" ;;
+    arm64) appimagename="predictionapp" ;;
+esac
+
 # Creates a kind cluster in the form of a Docker container
 #kind create cluster --name predictingcluster
 
@@ -19,7 +30,8 @@ sleep 60
 kubectl get all -A
 
 # Retrieves a Docker Image and loads it into the kind Docker Container, a Docker image within a Docker container
-kind load docker-image xnonr/predictionapp:0.6.0 --name predictingcluster
+docker pull xnonr/${appimagename}:${appimageversion}
+kind load docker-image xnonr/${appimagename}:${appimageversion} --name predictingcluster
 
 # Enters the Docker container itself and opens up a shell command line within
 #docker exec -ti predictingcluster-control-plane bash
